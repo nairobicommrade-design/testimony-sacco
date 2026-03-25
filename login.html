@@ -3,143 +3,501 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Member Login | Testimony Sacco</title>
+<title>Login | Testimony Sacco</title>
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>">
 <style>
-.login-bg {
+.auth-bg {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, #2d5fa6 100%);
+  background: linear-gradient(135deg, #0d2244 0%, #1F3864 60%, #2d5fa6 100%);
   display: flex; align-items: center; justify-content: center;
   padding: 24px; position: relative; overflow: hidden;
 }
-.login-bg::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23C9A84C' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+.auth-bg::before {
+  content: ''; position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C9A84C' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
 }
-.login-card {
-  background: var(--white); border-radius: 20px;
-  padding: 48px 40px; width: 100%; max-width: 440px;
-  box-shadow: 0 24px 64px rgba(0,0,0,.25);
-  position: relative;
+.auth-card {
+  background: #fff; border-radius: 20px;
+  width: 100%; max-width: 460px;
+  box-shadow: 0 24px 64px rgba(0,0,0,.3);
+  overflow: hidden; position: relative;
 }
-.login-logo {
-  text-align: center; margin-bottom: 32px;
+.auth-header {
+  background: linear-gradient(135deg, #1F3864, #2d5fa6);
+  padding: 36px 40px 28px; text-align: center; color: #fff;
 }
-.login-logo .logo-icon {
-  width: 72px; height: 72px; font-size: 36px;
-  margin: 0 auto 14px; border-radius: 18px;
+.auth-logo {
+  width: 68px; height: 68px; border-radius: 18px;
+  background: linear-gradient(135deg, #C9A84C, #f0d080);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 34px; margin: 0 auto 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
 }
-.login-logo h1 {
-  font-size: 22px; color: var(--navy); margin-bottom: 4px;
+.auth-header h1 { font-size: 22px; font-family:'Playfair Display',serif; margin-bottom: 4px; }
+.auth-header p { font-size: 13px; opacity: .75; }
+.auth-body { padding: 32px 40px 36px; }
+.auth-tabs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: #f0ece4; border-radius: 12px; padding: 4px;
+  margin-bottom: 28px;
 }
-.login-logo p { font-size: 13px; color: var(--text-light); }
-.role-tabs {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 8px; margin-bottom: 28px;
-  background: var(--warm-gray); border-radius: 12px; padding: 6px;
+.auth-tab {
+  padding: 10px; border-radius: 9px; border: none;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  color: #666; background: none; transition: all .25s;
 }
-.role-tab {
-  padding: 9px 4px; border-radius: 8px; border: none;
-  font-size: 12px; font-weight: 600; cursor: pointer;
-  color: var(--text-light); background: none; transition: all .25s;
-  text-align: center;
+.auth-tab.active { background: #fff; color: #1F3864; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: #1F3864; margin-bottom: 6px; }
+.form-group input, .form-group select {
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid #e0d8cc; border-radius: 10px;
+  font-size: 14px; font-family: 'DM Sans', sans-serif;
+  background: #faf8f4; color: #2c2c2c; outline: none;
+  transition: border-color .25s;
 }
-.role-tab.active { background: var(--white); color: var(--navy); box-shadow: 0 2px 8px rgba(0,0,0,.1); }
-.show-pw {
-  background: none; border: none; cursor: pointer;
-  color: var(--text-light); font-size: 18px;
-  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+.form-group input:focus, .form-group select:focus {
+  border-color: #1F3864; background: #fff;
 }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .pw-wrap { position: relative; }
-.demo-hint {
-  background: var(--gold-pale); border: 1px solid var(--gold);
-  border-radius: 10px; padding: 12px 14px; font-size: 12px;
-  color: #8a6820; margin-bottom: 20px;
+.pw-eye { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: #999; }
+.submit-btn {
+  width: 100%; padding: 14px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg, #1F3864, #2d5fa6);
+  color: #fff; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all .25s; margin-top: 4px;
+  font-family: 'DM Sans', sans-serif;
 }
-.demo-hint strong { display: block; margin-bottom: 4px; color: var(--navy); }
-.back-link {
-  text-align: center; margin-top: 24px;
-  font-size: 13px; color: var(--text-light);
-}
-.back-link a { color: var(--navy); font-weight: 600; }
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(31,56,100,.3); }
+.submit-btn:disabled { opacity: .7; transform: none; cursor: not-allowed; }
+.auth-footer { text-align: center; margin-top: 20px; font-size: 13px; color: #888; }
+.auth-footer a { color: #1F3864; font-weight: 600; }
+.alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; }
+.alert-error { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+.alert-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+.alert-info { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; }
+.step-indicator { display: flex; gap: 8px; margin-bottom: 24px; }
+.step { flex: 1; height: 4px; border-radius: 2px; background: #e0d8cc; transition: background .3s; }
+.step.active { background: #C9A84C; }
+.step.done { background: #1F3864; }
+.loader { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.pending-box { text-align: center; padding: 32px 20px; }
+.pending-box .ico { font-size: 52px; margin-bottom: 16px; }
+.pending-box h3 { font-size: 20px; color: #1F3864; margin-bottom: 10px; font-family: 'Playfair Display', serif; }
+.pending-box p { font-size: 14px; color: #666; line-height: 1.7; }
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="login-bg">
-  <div class="login-card">
+<div class="auth-bg">
+  <div class="auth-card">
 
-    <div class="login-logo">
-      <div class="logo-icon">🏦</div>
-      <h1>Member Portal</h1>
-      <p>Testimony Staff Savings & Credit Co-operative</p>
+    <div class="auth-header">
+      <div class="auth-logo">🏦</div>
+      <h1>Testimony Sacco</h1>
+      <p>Staff Savings & Credit Co-operative · Eldoret</p>
     </div>
 
-    <div class="role-tabs">
-      <button class="role-tab active" onclick="setRole('member',this)">👤 Member</button>
-      <button class="role-tab" onclick="setRole('officer',this)">👔 Officer</button>
-      <button class="role-tab" onclick="setRole('admin',this)">🔐 Admin</button>
-    </div>
-
-    <div class="demo-hint" id="demoHint">
-      <strong>🧪 Demo Mode</strong>
-      Member login: HM018 / sacco123 &nbsp;|&nbsp; Admin: ADMIN / admin123
-    </div>
-
-    <form id="loginForm">
-      <div class="form-group">
-        <label for="memberNo" id="loginLabel">Member Number</label>
-        <input type="text" id="memberNo" placeholder="e.g. HM018" autocomplete="username" required>
+    <div class="auth-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+        <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Join Sacco</button>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <div class="pw-wrap">
-          <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" required>
-          <button type="button" class="show-pw" onclick="togglePw()">👁</button>
+
+      <!-- LOGIN FORM -->
+      <div id="panel-login">
+        <div id="login-alert"></div>
+        <form id="loginForm">
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="login-email" placeholder="your@email.com" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <div class="pw-wrap">
+              <input type="password" id="login-pw" placeholder="Your password" required>
+              <button type="button" class="pw-eye" onclick="togglePw('login-pw')">👁</button>
+            </div>
+          </div>
+          <button type="submit" class="submit-btn" id="login-btn">Sign In →</button>
+        </form>
+        <div class="auth-footer">
+          <a href="#" onclick="showReset()">Forgot password?</a>
+          &nbsp;·&nbsp;
+          <a href="index.html">← Back to website</a>
         </div>
       </div>
-      <button type="submit" class="btn btn-navy" style="width:100%;justify-content:center;border-radius:12px;height:50px;font-size:16px">
-        Sign In →
-      </button>
-    </form>
 
-    <div class="back-link">
-      <a href="index.html">← Back to Website</a>
-      &nbsp;·&nbsp;
-      <a href="contact.html">Forgot Password?</a>
+      <!-- SIGNUP FORM (multi-step) -->
+      <div id="panel-signup" style="display:none">
+        <div class="step-indicator">
+          <div class="step active" id="step-1"></div>
+          <div class="step" id="step-2"></div>
+          <div class="step" id="step-3"></div>
+        </div>
+        <div id="signup-alert"></div>
+
+        <!-- Step 1: Personal Info -->
+        <div id="signup-step-1">
+          <div style="font-size:13px;font-weight:700;color:#C9A84C;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px">Step 1 of 3 — Personal Information</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name *</label>
+              <input type="text" id="s-fname" placeholder="First name" required>
+            </div>
+            <div class="form-group">
+              <label>Last Name *</label>
+              <input type="text" id="s-lname" placeholder="Last name" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>ID Number *</label>
+              <input type="text" id="s-id" placeholder="National ID No." required>
+            </div>
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" id="s-phone" placeholder="07XX XXX XXX" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Occupation</label>
+            <input type="text" id="s-occ" placeholder="Your job/occupation">
+          </div>
+          <button type="button" class="submit-btn" onclick="nextStep(2)">Continue →</button>
+        </div>
+
+        <!-- Step 2: Next of Kin + Account -->
+        <div id="signup-step-2" style="display:none">
+          <div style="font-size:13px;font-weight:700;color:#C9A84C;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px">Step 2 of 3 — Next of Kin & Account</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Next of Kin Name *</label>
+              <input type="text" id="s-nok" placeholder="Full name" required>
+            </div>
+            <div class="form-group">
+              <label>NOK Phone *</label>
+              <input type="tel" id="s-nokph" placeholder="07XX XXX XXX" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address * (used for login)</label>
+            <input type="email" id="s-email" placeholder="your@email.com" required>
+          </div>
+          <div class="form-group">
+            <label>Create Password *</label>
+            <div class="pw-wrap">
+              <input type="password" id="s-pw" placeholder="Min. 8 characters" required>
+              <button type="button" class="pw-eye" onclick="togglePw('s-pw')">👁</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Confirm Password *</label>
+            <input type="password" id="s-pw2" placeholder="Repeat password" required>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button type="button" class="submit-btn" style="background:#f0ece4;color:#1F3864;flex:0 0 80px" onclick="nextStep(1)">← Back</button>
+            <button type="button" class="submit-btn" onclick="nextStep(3)">Continue →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Agreement + Submit -->
+        <div id="signup-step-3" style="display:none">
+          <div style="font-size:13px;font-weight:700;color:#C9A84C;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px">Step 3 of 3 — Agreement & Submit</div>
+          <div style="background:#faf8f4;border:1px solid #e0d8cc;border-radius:12px;padding:20px;font-size:13px;color:#555;line-height:1.8;margin-bottom:20px">
+            <strong style="color:#1F3864;display:block;margin-bottom:8px">📋 Membership Terms</strong>
+            By joining Testimony Staff Savings and Credit Co-operative Society Ltd, I agree to:
+            <ul style="margin:10px 0 0 18px">
+              <li>Save a minimum of <strong>KES 1,000</strong> per month</li>
+              <li>Contribute <strong>KES 200</strong> monthly to the Benevolent Fund</li>
+              <li>Abide by the SACCO's by-laws and regulations</li>
+              <li>Provide accurate and truthful information</li>
+              <li>Maintain my account in good standing</li>
+            </ul>
+          </div>
+          <div class="form-group">
+            <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-weight:400">
+              <input type="checkbox" id="s-agree" style="width:auto;margin-top:3px;flex-shrink:0">
+              <span style="color:#555;font-size:13px">I have read and agree to the Testimony Sacco membership terms and by-laws.</span>
+            </label>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button type="button" class="submit-btn" style="background:#f0ece4;color:#1F3864;flex:0 0 80px" onclick="nextStep(2)">← Back</button>
+            <button type="button" class="submit-btn" id="signup-btn" onclick="submitSignup()">🚀 Submit Application</button>
+          </div>
+        </div>
+
+        <!-- Pending approval screen -->
+        <div id="signup-pending" style="display:none" class="pending-box">
+          <div class="ico">⏳</div>
+          <h3>Application Submitted!</h3>
+          <p>Your membership application has been received.<br>
+          The admin will review and approve your account.<br>
+          You will receive an email once activated.<br><br>
+          <strong>Typical approval time: 1–2 working days</strong></p>
+          <a href="index.html" style="display:inline-block;margin-top:20px;padding:12px 28px;background:#1F3864;color:#fff;border-radius:10px;font-weight:600;font-size:14px">← Back to Website</a>
+        </div>
+      </div>
+
+      <!-- PASSWORD RESET -->
+      <div id="panel-reset" style="display:none">
+        <div id="reset-alert"></div>
+        <div style="text-align:center;margin-bottom:24px">
+          <div style="font-size:36px;margin-bottom:10px">🔑</div>
+          <div style="font-size:16px;font-weight:700;color:#1F3864;margin-bottom:6px">Reset Password</div>
+          <div style="font-size:13px;color:#888">Enter your email and we'll send a reset link.</div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="reset-email" placeholder="your@email.com">
+        </div>
+        <button type="button" class="submit-btn" onclick="submitReset()">Send Reset Link</button>
+        <div class="auth-footer" style="margin-top:16px">
+          <a href="#" onclick="switchTab('login')">← Back to login</a>
+        </div>
+      </div>
+
     </div>
-
   </div>
 </div>
 
-<script src="assets/js/app.js"></script>
-<script>
-function setRole(role, btn) {
-  document.querySelectorAll('.role-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const label = document.getElementById('loginLabel');
-  const hint  = document.getElementById('demoHint');
-  if (role === 'admin') {
-    label.textContent = 'Admin Username';
-    document.getElementById('memberNo').placeholder = 'e.g. ADMIN';
-    hint.innerHTML = '<strong>🔐 Admin Login</strong>Username: ADMIN &nbsp;|&nbsp; Password: admin123';
-  } else if (role === 'officer') {
-    label.textContent = 'Officer Code';
-    document.getElementById('memberNo').placeholder = 'e.g. CHAIRMAN, TREASURER';
-    hint.innerHTML = '<strong>👔 Officer Login</strong>Chairman: CHAIRMAN/chair123 &nbsp;|&nbsp; Treasurer: TREASURER/treas123';
-  } else {
-    label.textContent = 'Member Number';
-    document.getElementById('memberNo').placeholder = 'e.g. HM018';
-    hint.innerHTML = '<strong>🧪 Demo Mode</strong>Member login: HM018 / sacco123 &nbsp;|&nbsp; Admin: ADMIN / admin123';
+<script type="module">
+import {
+  auth, db, showToast,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  sendPasswordResetEmail, onAuthStateChanged,
+  doc, setDoc, getDoc, serverTimestamp
+} from './assets/js/firebase-config.js';
+
+// ── Tab switching ─────────────────────────────────────────────────
+window.switchTab = (tab) => {
+  document.getElementById('panel-login').style.display   = tab === 'login'  ? 'block' : 'none';
+  document.getElementById('panel-signup').style.display  = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('panel-reset').style.display   = 'none';
+  document.getElementById('tab-login').classList.toggle('active',  tab === 'login');
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+};
+
+window.showReset = () => {
+  document.getElementById('panel-login').style.display  = 'none';
+  document.getElementById('panel-signup').style.display = 'none';
+  document.getElementById('panel-reset').style.display  = 'block';
+};
+
+window.togglePw = (id) => {
+  const el = document.getElementById(id);
+  el.type = el.type === 'password' ? 'text' : 'password';
+};
+
+// ── Multi-step signup ─────────────────────────────────────────────
+window.nextStep = (step) => {
+  // Validate before moving forward
+  if (step === 2) {
+    const fname = document.getElementById('s-fname').value.trim();
+    const lname = document.getElementById('s-lname').value.trim();
+    const idno  = document.getElementById('s-id').value.trim();
+    const phone = document.getElementById('s-phone').value.trim();
+    if (!fname || !lname || !idno || !phone) {
+      setAlert('signup-alert', 'error', '⚠️ Please fill in all required fields.');
+      return;
+    }
+    setAlert('signup-alert', '', '');
   }
+  if (step === 3) {
+    const email = document.getElementById('s-email').value.trim();
+    const pw    = document.getElementById('s-pw').value;
+    const pw2   = document.getElementById('s-pw2').value;
+    const nok   = document.getElementById('s-nok').value.trim();
+    const nokph = document.getElementById('s-nokph').value.trim();
+    if (!email || !pw || !nok || !nokph) {
+      setAlert('signup-alert', 'error', '⚠️ Please fill in all required fields.');
+      return;
+    }
+    if (pw.length < 8) {
+      setAlert('signup-alert', 'error', '⚠️ Password must be at least 8 characters.');
+      return;
+    }
+    if (pw !== pw2) {
+      setAlert('signup-alert', 'error', '⚠️ Passwords do not match.');
+      return;
+    }
+    setAlert('signup-alert', '', '');
+  }
+
+  // Show/hide steps
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('signup-step-' + i);
+    if (el) el.style.display = i === step ? 'block' : 'none';
+    const si = document.getElementById('step-' + i);
+    if (si) {
+      si.className = 'step' + (i < step ? ' done' : i === step ? ' active' : '');
+    }
+  }
+};
+
+// ── Submit signup ─────────────────────────────────────────────────
+window.submitSignup = async () => {
+  if (!document.getElementById('s-agree').checked) {
+    setAlert('signup-alert', 'error', '⚠️ Please accept the membership terms.');
+    return;
+  }
+
+  const btn   = document.getElementById('signup-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loader"></span>Submitting...';
+
+  const email   = document.getElementById('s-email').value.trim();
+  const pw      = document.getElementById('s-pw').value;
+  const fname   = document.getElementById('s-fname').value.trim();
+  const lname   = document.getElementById('s-lname').value.trim();
+  const idno    = document.getElementById('s-id').value.trim();
+  const phone   = document.getElementById('s-phone').value.trim();
+  const occ     = document.getElementById('s-occ').value.trim();
+  const nok     = document.getElementById('s-nok').value.trim();
+  const nokph   = document.getElementById('s-nokph').value.trim();
+
+  try {
+    // Create Firebase Auth account
+    const cred = await createUserWithEmailAndPassword(auth, email, pw);
+    const uid  = cred.user.uid;
+
+    // Save to Firestore — status: pending (admin must approve)
+    await setDoc(doc(db, 'members', uid), {
+      uid,
+      email,
+      fullName:   fname + ' ' + lname,
+      firstName:  fname,
+      lastName:   lname,
+      idNo:       idno,
+      phone,
+      occupation: occ,
+      nokName:    nok,
+      nokPhone:   nokph,
+      role:       'member',
+      status:     'pending',          // admin approves → 'active'
+      memberNo:   '',                 // admin assigns member number
+      savings:    0,
+      loanBalance:0,
+      shares:     0,
+      createdAt:  serverTimestamp(),
+      approvedAt: null,
+      approvedBy: null,
+    });
+
+    // Also log to applications collection for admin review
+    await setDoc(doc(db, 'applications', uid), {
+      uid, email,
+      fullName: fname + ' ' + lname,
+      idNo: idno, phone, occupation: occ,
+      nokName: nok, nokPhone: nokph,
+      status: 'pending',
+      appliedAt: serverTimestamp(),
+    });
+
+    // Sign out — they can't access portal until approved
+    await auth.signOut();
+
+    // Show pending screen
+    document.getElementById('signup-step-3').style.display = 'none';
+    document.getElementById('signup-pending').style.display = 'block';
+
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '🚀 Submit Application';
+    const msg = e.code === 'auth/email-already-in-use'
+      ? '⚠️ This email is already registered. Try signing in.'
+      : '❌ ' + e.message;
+    setAlert('signup-alert', 'error', msg);
+  }
+};
+
+// ── Login ─────────────────────────────────────────────────────────
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn   = document.getElementById('login-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loader"></span>Signing in...';
+
+  const email = document.getElementById('login-email').value.trim();
+  const pw    = document.getElementById('login-pw').value;
+
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, pw);
+    const snap = await getDoc(doc(db, 'members', cred.user.uid));
+
+    if (!snap.exists()) {
+      await auth.signOut();
+      setAlert('login-alert', 'error', '❌ Account not found. Please sign up first.');
+      btn.disabled = false; btn.textContent = 'Sign In →'; return;
+    }
+
+    const data = snap.data();
+
+    // Check if pending approval
+    if (data.status === 'pending') {
+      await auth.signOut();
+      setAlert('login-alert', 'info', '⏳ Your account is pending admin approval. Please wait 1-2 working days.');
+      btn.disabled = false; btn.textContent = 'Sign In →'; return;
+    }
+
+    if (data.status === 'suspended') {
+      await auth.signOut();
+      setAlert('login-alert', 'error', '🚫 Your account has been suspended. Contact the office.');
+      btn.disabled = false; btn.textContent = 'Sign In →'; return;
+    }
+
+    // Redirect based on role
+    if (data.role === 'admin' || data.role === 'treasurer' ||
+        data.role === 'chairman' || data.role === 'secretary') {
+      window.location.href = 'admin/panel.html';
+    } else {
+      window.location.href = 'member/dashboard.html';
+    }
+
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Sign In →';
+    const msg = e.code === 'auth/invalid-credential'
+      ? '❌ Invalid email or password.'
+      : '❌ ' + e.message;
+    setAlert('login-alert', 'error', msg);
+  }
+});
+
+// ── Password reset ────────────────────────────────────────────────
+window.submitReset = async () => {
+  const email = document.getElementById('reset-email').value.trim();
+  if (!email) { setAlert('reset-alert', 'error', 'Enter your email address.'); return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    setAlert('reset-alert', 'success', '✅ Reset link sent! Check your email inbox.');
+  } catch(e) {
+    setAlert('reset-alert', 'error', '❌ ' + e.message);
+  }
+};
+
+// ── Helpers ───────────────────────────────────────────────────────
+function setAlert(id, type, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!msg) { el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
 }
 
-function togglePw() {
-  const pw = document.getElementById('password');
-  pw.type = pw.type === 'password' ? 'text' : 'password';
-}
+// If already logged in → redirect
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const snap = await getDoc(doc(db, 'members', user.uid));
+    if (snap.exists() && snap.data().status === 'active') {
+      const role = snap.data().role;
+      window.location.href = (role === 'admin' || role === 'treasurer' || role === 'chairman')
+        ? 'admin/panel.html' : 'member/dashboard.html';
+    }
+  }
+});
 </script>
 </body>
 </html>
