@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dashboard | Testimony Sacco</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>">
+<style>
+body { background: var(--warm-gray); }
+.dash-nav {
+  background: var(--navy-dark); padding: 0 24px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 16px rgba(0,0,0,.2);
+}
+.dash-nav .logo-name { color: white; }
+.dash-user { display: flex; align-items: center; gap: 12px; }
+.dash-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--gold); color: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 16px; font-family: 'Playfair Display',serif;
+}
+.dash-user-info { color: white; }
+.dash-user-name { font-size: 14px; font-weight: 600; }
+.dash-user-role { font-size: 11px; color: rgba(255,255,255,.6); text-transform: capitalize; }
+.nav-tabs {
+  background: var(--white); padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 0; overflow-x: auto;
+}
+.nav-tab {
+  padding: 16px 20px; font-size: 14px; font-weight: 600;
+  color: var(--text-light); cursor: pointer; white-space: nowrap;
+  border-bottom: 3px solid transparent; transition: all .25s;
+  background: none; border-top: none; border-left: none; border-right: none;
+}
+.nav-tab.active, .nav-tab:hover { color: var(--navy); border-bottom-color: var(--gold); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.quick-actions {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px; margin-bottom: 20px;
+}
+.action-btn {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; text-align: center;
+  cursor: pointer; transition: all .25s; font-size: 13px; font-weight: 600;
+  color: var(--navy);
+}
+.action-btn:hover { border-color: var(--gold); background: var(--gold-pale); transform: translateY(-2px); }
+.action-btn .ico { font-size: 24px; margin-bottom: 8px; }
+.progress-bar {
+  height: 8px; background: var(--warm-gray); border-radius: 4px; overflow: hidden; margin-top: 8px;
+}
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--navy), var(--navy-mid)); border-radius: 4px; transition: width 1s ease; }
+.loan-status { display: flex; flex-direction: column; gap: 16px; }
+.loan-item {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px; background: var(--white);
+}
+.loan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.loan-type { font-weight: 700; color: var(--navy); }
+.payment-grid { display: grid; grid-template-columns: repeat(12,1fr); gap: 4px; margin-top: 12px; }
+.month-dot {
+  aspect-ratio: 1; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 700;
+}
+.month-dot.paid { background: #e8f5e9; color: var(--success); }
+.month-dot.due  { background: #fff3e0; color: #e65100; }
+.month-dot.empty{ background: var(--warm-gray); }
+.stmt-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.stmt-row:last-child { border-bottom: none; }
+.stmt-desc { font-size: 14px; font-weight: 500; }
+.stmt-date { font-size: 12px; color: var(--text-light); }
+.stmt-amt { font-weight: 700; }
+.stmt-amt.credit { color: var(--success); }
+.stmt-amt.debit  { color: var(--danger); }
+</style>
+</head>
+<body id="memberDash">
+
+<!-- TOP NAV -->
+<nav class="dash-nav">
+  <a href="../index.html" class="logo-wrap">
+    <div class="logo-icon" style="width:40px;height:40px;font-size:20px">🏦</div>
+    <div class="logo-text">
+      <span class="logo-name">Testimony Sacco</span>
+    </div>
+  </a>
+  <div class="dash-user">
+    <div class="dash-user-info" style="text-align:right">
+      <div class="dash-user-name" id="dashName">Loading...</div>
+      <div class="dash-user-role" id="dashRole"></div>
+    </div>
+    <div class="dash-avatar" id="dashAvatar">?</div>
+    <button data-logout class="btn" style="background:rgba(255,255,255,.1);color:white;padding:8px 16px;border-radius:8px;font-size:13px">Sign Out</button>
+  </div>
+</nav>
+
+<!-- TAB NAV -->
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="showTab('overview',this)">📊 Overview</button>
+  <button class="nav-tab" onclick="showTab('savings',this)">💰 Savings</button>
+  <button class="nav-tab" onclick="showTab('loans',this)">🏦 Loans</button>
+  <button class="nav-tab" onclick="showTab('contributions',this)">💳 Contributions</button>
+  <button class="nav-tab" onclick="showTab('profile',this)">👤 Profile</button>
+</div>
+
+<div class="dashboard">
+
+  <!-- OVERVIEW TAB -->
+  <div class="tab-panel active" id="tab-overview">
+
+    <!-- HEADER CARD -->
+    <div class="dash-header">
+      <div>
+        <div style="font-size:13px;opacity:.7;margin-bottom:4px">Welcome back,</div>
+        <div style="font-size:26px;font-family:'Playfair Display',serif;font-weight:700" id="dashGreet">Member</div>
+        <div style="font-size:13px;opacity:.7;margin-top:4px">Member No: <strong id="dashMn" style="color:var(--gold-light)"></strong></div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12px;opacity:.6">Account Status</div>
+        <div style="margin-top:4px"><span class="badge badge-green" id="memStatus">Active</span></div>
+        <div style="font-size:12px;opacity:.6;margin-top:8px" id="dashDate"></div>
+      </div>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="dash-cards">
+      <div class="dash-card">
+        <div class="dash-card-ico">💰</div>
+        <div class="dash-card-val" id="savBal">KES 0</div>
+        <div class="dash-card-lbl">Savings Balance</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-ico">🏦</div>
+        <div class="dash-card-val" id="loanBal">—</div>
+        <div class="dash-card-lbl">Active Loan Balance</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-ico">📈</div>
+        <div class="dash-card-val" id="shares">0 shares</div>
+        <div class="dash-card-lbl">Shares Held</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-ico">✅</div>
+        <div class="dash-card-val" id="contribs">0 months</div>
+        <div class="dash-card-lbl">Contributions Made</div>
+      </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="dash-section">
+      <h3>Quick Actions</h3>
+      <div class="quick-actions">
+        <div class="action-btn"><div class="ico">📊</div>View Statement</div>
+        <div class="action-btn"><div class="ico">📝</div>Apply for Loan</div>
+        <div class="action-btn"><div class="ico">💳</div>Pay Contribution</div>
+        <div class="action-btn"><div class="ico">📞</div>Contact Treasurer</div>
+        <div class="action-btn" onclick="window.print()"><div class="ico">🖨️</div>Print Summary</div>
+      </div>
+    </div>
+
+    <!-- LOAN ELIGIBILITY -->
+    <div class="dash-section">
+      <h3>Loan Eligibility Calculator</h3>
+      <p style="font-size:14px;color:var(--text-light);margin-bottom:16px">Based on your savings balance, here is how much you can borrow:</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px">
+        <div style="background:var(--gold-pale);border-radius:12px;padding:20px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase">Max Eligible</div>
+          <div style="font-size:28px;font-family:'Playfair Display',serif;font-weight:700;color:var(--navy);margin:8px 0" id="maxEligible">KES 0</div>
+          <div style="font-size:12px;color:var(--text-light)">3× your savings</div>
+        </div>
+        <div style="background:var(--warm-gray);border-radius:12px;padding:20px">
+          <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:12px">Eligibility Progress</div>
+          <div style="font-size:12px;color:var(--text-light)">Savings vs Target (KES 50,000)</div>
+          <div class="progress-bar" style="margin-top:8px"><div class="progress-fill" id="savProgress" style="width:0%"></div></div>
+          <div style="font-size:12px;color:var(--text-light);margin-top:8px">Loan repaid: <span id="loanProgress">0%</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SAVINGS TAB -->
+  <div class="tab-panel" id="tab-savings">
+    <div class="dash-section">
+      <h3>Savings & Shares Account</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px">
+        <div style="background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-radius:14px;padding:24px;color:white;text-align:center">
+          <div style="font-size:12px;opacity:.7">Total Savings</div>
+          <div style="font-size:28px;font-family:'Playfair Display',serif;font-weight:700;margin:8px 0" id="sv-total">KES 0</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#2e7d32,#388e3c);border-radius:14px;padding:24px;color:white;text-align:center">
+          <div style="font-size:12px;opacity:.7">Net Balance</div>
+          <div style="font-size:28px;font-family:'Playfair Display',serif;font-weight:700;margin:8px 0" id="sv-net">KES 0</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#8a6820,var(--gold));border-radius:14px;padding:24px;color:white;text-align:center">
+          <div style="font-size:12px;opacity:.7">Share Value</div>
+          <div style="font-size:28px;font-family:'Playfair Display',serif;font-weight:700;margin:8px 0" id="sv-shares">0</div>
+        </div>
+      </div>
+      <h4 style="margin-bottom:12px;color:var(--navy)">Transaction History</h4>
+      <div class="stmt-row">
+        <div>
+          <div class="stmt-desc">Monthly Contribution — March 2026</div>
+          <div class="stmt-date">25 Mar 2026</div>
+        </div>
+        <div class="stmt-amt credit">+ KES 1,000</div>
+      </div>
+      <div class="stmt-row">
+        <div>
+          <div class="stmt-desc">Monthly Contribution — February 2026</div>
+          <div class="stmt-date">25 Feb 2026</div>
+        </div>
+        <div class="stmt-amt credit">+ KES 1,000</div>
+      </div>
+      <div class="stmt-row">
+        <div>
+          <div class="stmt-desc">Monthly Contribution — January 2026</div>
+          <div class="stmt-date">25 Jan 2026</div>
+        </div>
+        <div class="stmt-amt credit">+ KES 1,000</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOANS TAB -->
+  <div class="tab-panel" id="tab-loans">
+    <div class="dash-section">
+      <h3>Loan Status</h3>
+      <div class="loan-status" id="loanStatus">
+        <div class="loan-item">
+          <div class="loan-header">
+            <div class="loan-type">🏦 Normal Loan</div>
+            <span class="badge badge-blue">Active</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;font-size:13px">
+            <div><div style="color:var(--text-light)">Principal</div><div style="font-weight:700;color:var(--navy);margin-top:2px">KES 120,000</div></div>
+            <div><div style="color:var(--text-light)">Repaid</div><div style="font-weight:700;color:var(--success);margin-top:2px">KES 45,000</div></div>
+            <div><div style="color:var(--text-light)">Balance</div><div style="font-weight:700;color:var(--danger);margin-top:2px">KES 75,000</div></div>
+          </div>
+          <div class="progress-bar" style="margin-top:14px">
+            <div class="progress-fill" style="width:37.5%;background:linear-gradient(90deg,#2e7d32,#4caf50)"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-light);margin-top:6px">37.5% repaid · Due: December 2026</div>
+        </div>
+        <div style="background:var(--warm-gray);border-radius:var(--radius);padding:24px;text-align:center">
+          <div style="font-size:28px;margin-bottom:12px">✅</div>
+          <div style="font-weight:600;color:var(--navy);margin-bottom:6px">Want to apply for a new loan?</div>
+          <div style="font-size:13px;color:var(--text-light);margin-bottom:16px">Contact the Treasurer or visit the office with your member card.</div>
+          <a href="../contact.html" class="btn btn-navy" style="font-size:13px;padding:10px 20px">Contact Treasurer</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTRIBUTIONS TAB -->
+  <div class="tab-panel" id="tab-contributions">
+    <div class="dash-section">
+      <h3>Monthly Contribution History</h3>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Month</th><th>Year</th>
+              <th>Total Paid</th><th>Savings</th><th>Benevolent</th>
+              <th>Loan Repay</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="contribTable">
+            <tr>
+              <td>1</td><td>Mar</td><td>2026</td>
+              <td>KES 5,377</td><td>KES 1,000</td><td>KES 200</td>
+              <td>KES 4,177</td><td><span class="badge badge-green">Paid</span></td>
+            </tr>
+            <tr>
+              <td>2</td><td>Feb</td><td>2026</td>
+              <td>KES 5,200</td><td>KES 1,000</td><td>KES 200</td>
+              <td>KES 4,000</td><td><span class="badge badge-green">Paid</span></td>
+            </tr>
+            <tr>
+              <td>3</td><td>Jan</td><td>2026</td>
+              <td>KES 5,200</td><td>KES 1,000</td><td>KES 200</td>
+              <td>KES 4,000</td><td><span class="badge badge-green">Paid</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div class="tab-panel" id="tab-profile">
+    <div class="dash-section">
+      <h3>My Profile</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div>
+          <div style="text-align:center;padding:32px;background:var(--warm-gray);border-radius:14px;margin-bottom:20px">
+            <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-mid));display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif;margin:0 auto 14px" id="profileAvatar">?</div>
+            <div style="font-size:20px;font-weight:700;color:var(--navy)" id="profileName">Loading...</div>
+            <div style="font-size:13px;color:var(--text-light);margin-top:4px" id="profileMn"></div>
+            <div style="margin-top:12px"><span class="badge badge-green">Active Member</span></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="background:var(--warm-gray);border-radius:10px;padding:16px">
+              <div style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Member Since</div>
+              <div style="font-size:15px;font-weight:600;color:var(--navy);margin-top:4px">01 January 2026</div>
+            </div>
+            <div style="background:var(--warm-gray);border-radius:10px;padding:16px">
+              <div style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Membership Status</div>
+              <div style="font-size:15px;font-weight:600;color:var(--success);margin-top:4px">✅ Active & Good Standing</div>
+            </div>
+            <div style="background:var(--warm-gray);border-radius:10px;padding:16px">
+              <div style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:1px">Interest Rate</div>
+              <div style="font-size:15px;font-weight:600;color:var(--navy);margin-top:4px">4.2% reducing balance</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:20px;padding:20px;background:var(--gold-pale);border-radius:12px;border:1px solid var(--gold)">
+        <div style="font-weight:700;color:var(--navy);margin-bottom:8px">📞 Need Help?</div>
+        <div style="font-size:14px;color:var(--text-light)">Contact the office for any changes to your profile, password reset or account enquiries.</div>
+        <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+          <a href="tel:+254726237882" class="btn btn-navy" style="font-size:13px;padding:10px 20px">📞 Call Treasurer</a>
+          <a href="https://wa.me/254726237882" class="btn btn-primary" style="font-size:13px;padding:10px 20px" target="_blank">💬 WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end dashboard -->
+
+<script src="../assets/js/app.js"></script>
+<script>
+function showTab(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Set date
+document.getElementById('dashDate').textContent = new Date().toLocaleDateString('en-KE',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+// After user loads, set avatar and profile
+const authCheck = setInterval(() => {
+  const user = getSaccoUser ? getSaccoUser() : null;
+  if (user) {
+    clearInterval(authCheck);
+    const initials = user.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+    document.getElementById('dashAvatar').textContent = initials;
+    document.getElementById('dashGreet').textContent = user.name.split(' ')[0];
+    document.getElementById('profileAvatar').textContent = initials;
+    document.getElementById('profileName').textContent = user.name;
+    document.getElementById('profileMn').textContent = 'Member No: ' + user.mn;
+
+    // Set savings-based calculations
+    setTimeout(() => {
+      const savEl = document.getElementById('savBal');
+      if (savEl) {
+        const savAmt = parseInt(savEl.textContent.replace(/[^0-9]/g,'')) || 0;
+        const maxEl = document.getElementById('maxEligible');
+        if (maxEl) maxEl.textContent = 'KES ' + (savAmt*3).toLocaleString();
+        const prog = document.getElementById('savProgress');
+        if (prog) prog.style.width = Math.min(100, savAmt/500) + '%';
+      }
+      const svTotal = document.getElementById('sv-total');
+      const svNet = document.getElementById('sv-net');
+      const svShares = document.getElementById('sv-shares');
+      if (svTotal) svTotal.textContent = document.getElementById('savBal')?.textContent || 'KES 0';
+      if (svNet) svNet.textContent = document.getElementById('savBal')?.textContent || 'KES 0';
+      if (svShares) svShares.textContent = document.getElementById('shares')?.textContent || '0';
+    }, 500);
+  }
+}, 100);
+</script>
+</body>
+</html>

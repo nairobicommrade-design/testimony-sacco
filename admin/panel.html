@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel | Testimony Sacco</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+<style>
+body { background: var(--warm-gray); }
+.admin-topnav {
+  background: var(--navy-dark); height: 60px; padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(0,0,0,.2);
+}
+.admin-topnav .logo-name { color: white; font-size: 14px; }
+.admin-user { display: flex; align-items: center; gap: 10px; color: white; font-size: 13px; }
+.admin-badge {
+  background: var(--gold); color: var(--navy); font-size: 11px;
+  font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: .5px;
+}
+</style>
+</head>
+<body id="adminPanel">
+
+<!-- TOP NAV -->
+<nav class="admin-topnav">
+  <a href="../index.html" class="logo-wrap">
+    <div class="logo-icon" style="width:36px;height:36px;font-size:18px">🏦</div>
+    <div class="logo-text">
+      <span class="logo-name">Testimony Sacco</span>
+      <span class="logo-sub" style="font-size:9px">Admin Panel</span>
+    </div>
+  </a>
+  <div class="admin-user">
+    <span id="adminRole" class="admin-badge">Admin</span>
+    <span id="adminName">Administrator</span>
+    <button data-logout class="btn" style="background:rgba(255,255,255,.1);color:white;padding:7px 14px;border-radius:8px;font-size:12px">Sign Out</button>
+  </div>
+</nav>
+
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <div class="admin-sidebar">
+    <button class="admin-nav-link active" data-section="overview" onclick="adminNav('overview',this)">
+      <span class="ico">📊</span> Overview
+    </button>
+    <h3>Content</h3>
+    <button class="admin-nav-link" data-section="news" onclick="adminNav('news',this)">
+      <span class="ico">📢</span> News & Announcements
+    </button>
+    <button class="admin-nav-link" data-section="members" onclick="adminNav('members',this)">
+      <span class="ico">👥</span> Members
+    </button>
+    <h3>Finance</h3>
+    <button class="admin-nav-link" data-section="loans" onclick="adminNav('loans',this)">
+      <span class="ico">🏦</span> Loan Applications
+    </button>
+    <button class="admin-nav-link" data-section="contribs" onclick="adminNav('contribs',this)">
+      <span class="ico">💳</span> Contributions
+    </button>
+    <h3>Reports</h3>
+    <button class="admin-nav-link" data-section="reports" onclick="adminNav('reports',this)">
+      <span class="ico">📋</span> Reports
+    </button>
+    <button class="admin-nav-link" data-section="settings" onclick="adminNav('settings',this)">
+      <span class="ico">⚙️</span> Site Settings
+    </button>
+    <div style="margin-top:auto;padding-top:20px">
+      <a href="../index.html" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.5);font-size:13px;padding:10px">
+        🌐 View Website
+      </a>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="admin-main">
+
+    <!-- OVERVIEW -->
+    <div class="admin-section" data-section="overview" style="display:block">
+      <div class="admin-topbar">
+        <h2>Dashboard Overview</h2>
+        <div style="font-size:13px;color:var(--text-light)" id="adminDate"></div>
+      </div>
+
+      <div class="admin-cards">
+        <div class="admin-card">
+          <div class="admin-card-ico navy">👥</div>
+          <div><div class="admin-card-val">200+</div><div class="admin-card-lbl">Total Members</div></div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-ico gold">💰</div>
+          <div><div class="admin-card-val">KES 12M</div><div class="admin-card-lbl">Total Savings</div></div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-ico green">🏦</div>
+          <div><div class="admin-card-val">45</div><div class="admin-card-lbl">Active Loans</div></div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-ico navy">⚠️</div>
+          <div><div class="admin-card-val">3</div><div class="admin-card-lbl">Overdue Loans</div></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="admin-section" style="margin-bottom:0">
+          <div class="admin-section-hdr">
+            <h3>Recent Activity</h3>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+              <div><strong>HM018</strong> — Contribution received</div>
+              <span class="badge badge-green">KES 5,377</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+              <div><strong>HM042</strong> — Loan application</div>
+              <span class="badge badge-gold">Pending</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+              <div><strong>HM031</strong> — Loan fully paid</div>
+              <span class="badge badge-green">Cleared</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+              <div><strong>HM122</strong> — New member</div>
+              <span class="badge badge-blue">New</span>
+            </div>
+          </div>
+        </div>
+        <div class="admin-section" style="margin-bottom:0">
+          <div class="admin-section-hdr"><h3>Quick Actions</h3></div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button class="btn btn-navy" style="justify-content:flex-start;gap:10px;border-radius:10px" onclick="adminNav('news',document.querySelector('[data-section=news]'))">📢 Post Announcement</button>
+            <button class="btn" style="background:var(--gold-pale);color:var(--navy);justify-content:flex-start;gap:10px;border-radius:10px" onclick="adminNav('members',document.querySelector('[data-section=members]'))">👥 Add New Member</button>
+            <button class="btn" style="background:#e8f5e9;color:var(--success);justify-content:flex-start;gap:10px;border-radius:10px" onclick="adminNav('reports',document.querySelector('[data-section=reports]'))">📋 Generate Report</button>
+            <a href="../index.html" class="btn" style="background:var(--warm-gray);color:var(--text);justify-content:flex-start;gap:10px;border-radius:10px">🌐 View Public Site</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEWS -->
+    <div class="admin-section" data-section="news" style="display:none">
+      <div class="admin-section-hdr">
+        <h3>News & Announcements</h3>
+      </div>
+      <form id="newsForm" style="max-width:600px">
+        <div class="form-group">
+          <label>Headline *</label>
+          <input type="text" placeholder="Enter news headline" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select>
+              <option>Announcement</option>
+              <option>Finance</option>
+              <option>Events</option>
+              <option>Technology</option>
+              <option>General</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="newsDate">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Content *</label>
+          <textarea rows="5" placeholder="Write the full news content here..." required style="resize:vertical"></textarea>
+        </div>
+        <button type="submit" class="btn btn-navy">📢 Publish News</button>
+      </form>
+
+      <div style="margin-top:32px">
+        <h4 style="color:var(--navy);margin-bottom:16px">Published Articles</h4>
+        <table class="data-table">
+          <thead><tr><th>Headline</th><th>Category</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>AGM 2026 — Save the Date</td>
+              <td><span class="badge badge-blue">Announcement</span></td>
+              <td>Mar 2026</td>
+              <td><button class="btn" style="padding:6px 12px;font-size:12px;background:var(--warm-gray);color:var(--navy)">Edit</button></td>
+            </tr>
+            <tr>
+              <td>2025 Dividend Declaration</td>
+              <td><span class="badge badge-gold">Finance</span></td>
+              <td>Feb 2026</td>
+              <td><button class="btn" style="padding:6px 12px;font-size:12px;background:var(--warm-gray);color:var(--navy)">Edit</button></td>
+            </tr>
+            <tr>
+              <td>Member Portal Now Live</td>
+              <td><span class="badge badge-green">Technology</span></td>
+              <td>Jan 2026</td>
+              <td><button class="btn" style="padding:6px 12px;font-size:12px;background:var(--warm-gray);color:var(--navy)">Edit</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MEMBERS -->
+    <div class="admin-section" data-section="members" style="display:none">
+      <div class="admin-section-hdr">
+        <h3>Member Management</h3>
+        <input type="text" placeholder="🔍 Search members..." style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;outline:none;width:240px">
+      </div>
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Member No</th><th>Full Name</th><th>Phone</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>HM018</td><td>Micah Kiptanui Yego</td><td>0726 237 882</td><td><span class="badge badge-green">Active</span></td><td><button class="btn" style="padding:6px 12px;font-size:12px;background:var(--warm-gray);color:var(--navy)">View</button></td></tr>
+          <tr><td>2</td><td>HM031</td><td>Joseph Sweta Serebeya</td><td>0727 545 764</td><td><span class="badge badge-green">Active</span></td><td><button class="btn" style="padding:6px 12px;font-size:12px;background:var(--warm-gray);color:var(--navy)">View</button></td></tr>
+          <tr><td>3</td><td>HM042</td><td>Alice Chepkemoi Kiboi</td><td>0733 740 928</td><td><span class="badge badge-green">Active</span></td><td><button class="btn" style="padding:6px 12px;font-size:12px;background:var(--warm-gray);color:var(--navy)">View</button></td></tr>
+          <tr><td>4</td><td>HM122</td><td>David Kibet S A Chumba</td><td>0714 510 786</td><td><span class="badge badge-green">Active</span></td><td><button class="btn" style="padding:6px 12px;font-size:12px;background:var(--warm-gray);color:var(--navy)">View</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LOANS -->
+    <div class="admin-section" data-section="loans" style="display:none">
+      <div class="admin-section-hdr"><h3>Loan Applications</h3></div>
+      <table class="data-table">
+        <thead><tr><th>Member</th><th>Type</th><th>Amount</th><th>Applied</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>HM042</td><td>Normal Loan</td><td>KES 85,000</td><td>20 Mar 2026</td><td><span class="badge badge-gold">Pending</span></td>
+          <td><div style="display:flex;gap:6px"><button class="btn" style="padding:6px 10px;font-size:11px;background:#e8f5e9;color:var(--success)">✓ Approve</button><button class="btn" style="padding:6px 10px;font-size:11px;background:#ffebee;color:var(--danger)">✗ Reject</button></div></td></tr>
+          <tr><td>HM018</td><td>Salary Advance</td><td>KES 13,320</td><td>18 Mar 2026</td><td><span class="badge badge-green">Active</span></td>
+          <td><button class="btn" style="padding:6px 10px;font-size:11px;background:var(--warm-gray);color:var(--navy)">View</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CONTRIBUTIONS -->
+    <div class="admin-section" data-section="contribs" style="display:none">
+      <div class="admin-section-hdr"><h3>Monthly Contributions</h3></div>
+      <table class="data-table">
+        <thead><tr><th>Member No</th><th>Name</th><th>Month</th><th>Total Paid</th><th>Savings</th><th>Loan Repay</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>HM018</td><td>Micah K. Yego</td><td>Mar 2026</td><td>KES 13,320</td><td>KES 1,000</td><td>KES 12,120</td><td><span class="badge badge-green">Paid</span></td></tr>
+          <tr><td>HM031</td><td>Joseph S. Serebeya</td><td>Mar 2026</td><td>KES 6,644</td><td>KES 1,000</td><td>KES 5,444</td><td><span class="badge badge-green">Paid</span></td></tr>
+          <tr><td>HM042</td><td>Alice C. Kiboi</td><td>Mar 2026</td><td>KES 4,632</td><td>KES 1,000</td><td>KES 3,432</td><td><span class="badge badge-green">Paid</span></td></tr>
+          <tr><td>HM122</td><td>David K. S. Chumba</td><td>Mar 2026</td><td>KES 5,377</td><td>KES 1,000</td><td>KES 4,177</td><td><span class="badge badge-green">Paid</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="admin-section" data-section="reports" style="display:none">
+      <div class="admin-section-hdr"><h3>Generate Reports</h3></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+        <div class="admin-card" style="flex-direction:column;align-items:flex-start;gap:12px;cursor:pointer" onclick="fakeDownload('Member Register')">
+          <div class="admin-card-ico navy" style="font-size:24px">👥</div>
+          <div><div style="font-weight:700;color:var(--navy)">Member Register</div><div class="admin-card-lbl">Full member list PDF</div></div>
+        </div>
+        <div class="admin-card" style="flex-direction:column;align-items:flex-start;gap:12px;cursor:pointer" onclick="fakeDownload('Loan Book')">
+          <div class="admin-card-ico gold" style="font-size:24px">🏦</div>
+          <div><div style="font-weight:700;color:var(--navy)">Loan Book Report</div><div class="admin-card-lbl">All active loans</div></div>
+        </div>
+        <div class="admin-card" style="flex-direction:column;align-items:flex-start;gap:12px;cursor:pointer" onclick="fakeDownload('Contributions')">
+          <div class="admin-card-ico green" style="font-size:24px">💳</div>
+          <div><div style="font-weight:700;color:var(--navy)">Contributions Report</div><div class="admin-card-lbl">Monthly payments</div></div>
+        </div>
+        <div class="admin-card" style="flex-direction:column;align-items:flex-start;gap:12px;cursor:pointer" onclick="fakeDownload('Board Report')">
+          <div class="admin-card-ico navy" style="font-size:24px">📋</div>
+          <div><div style="font-weight:700;color:var(--navy)">Full Board Report</div><div class="admin-card-lbl">Complete summary</div></div>
+        </div>
+      </div>
+      <div id="reportMsg" style="margin-top:16px"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="admin-section" data-section="settings" style="display:none">
+      <div class="admin-section-hdr"><h3>Site Settings</h3></div>
+      <form onsubmit="e=>e.preventDefault()">
+        <div class="form-group">
+          <label>SACCO Name</label>
+          <input type="text" value="Testimony Staff Savings & Credit Co-operative Society Ltd">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" value="053-2062714">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp (Treasurer)</label>
+            <input type="text" value="+254726237882">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" value="P.O. Box 2134–30100, Eldoret, Kenya">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Interest Rate (%)</label>
+            <input type="number" value="4.2" step="0.1">
+          </div>
+          <div class="form-group">
+            <label>Min. Monthly Savings (KES)</label>
+            <input type="number" value="1000">
+          </div>
+        </div>
+        <button type="button" class="btn btn-navy" onclick="showSaveAlert()">💾 Save Settings</button>
+      </form>
+      <div id="settingsAlert" style="margin-top:16px"></div>
+    </div>
+
+  </div><!-- end admin-main -->
+</div><!-- end admin-layout -->
+
+<script src="../assets/js/app.js"></script>
+<script>
+document.getElementById('adminDate').textContent = new Date().toLocaleDateString('en-KE',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+document.getElementById('newsDate').valueAsDate = new Date();
+
+function adminNav(section, btn) {
+  document.querySelectorAll('.admin-section[data-section]').forEach(s => s.style.display='none');
+  document.querySelectorAll('.admin-nav-link').forEach(l => l.classList.remove('active'));
+  const target = document.querySelector('.admin-section[data-section="'+section+'"]');
+  if(target) target.style.display='block';
+  if(btn) btn.classList.add('active');
+}
+
+function fakeDownload(name) {
+  const msg = document.getElementById('reportMsg');
+  msg.innerHTML = '<div class="alert alert-success">✅ '+name+' report generated and ready. In production this connects to Google Sheets.</div>';
+  setTimeout(()=>msg.innerHTML='',4000);
+}
+
+function showSaveAlert() {
+  const el = document.getElementById('settingsAlert');
+  el.innerHTML = '<div class="alert alert-success">✅ Settings saved successfully!</div>';
+  setTimeout(()=>el.innerHTML='',3000);
+}
+</script>
+</body>
+</html>
